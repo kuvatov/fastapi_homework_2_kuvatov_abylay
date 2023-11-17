@@ -28,7 +28,7 @@ class Issue(BaseModel):
     deadline: str
 
 
-@router.post('/issues/add')
+@router.post('/issues')
 def add_issue(issues_list: list[Issue]) -> list[Any]:
     issues.extend(issues_list)
     return issues
