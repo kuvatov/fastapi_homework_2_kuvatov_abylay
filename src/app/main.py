@@ -1,48 +1,29 @@
 import fastapi
-from pydantic import BaseModel
-from typing import Any
+import pydantic
+
+from tortoise.contrib.fastapi import register_tortoise
+
+from api.router import router
+from db.conf import TORTOISE_ORM
+from exceptions import handlers as exc_handlers, http as http_exc
 
 
-issues = [
-    {'id': 1, 'name': 'do something 1', 'deadline': '01.01.2024'},
-    {'id': 2, 'name': 'do something 2', 'deadline': '02.02.2024'},
-    {'id': 3, 'name': 'do something 3', 'deadline': '03.03.2024'},
-]
-
-router = fastapi.APIRouter(prefix='/api')
-
-
-@router.get('/issues')
-def get_issues() -> list[dict]:
-    return issues
-
-
-@router.get('/issues/{id_}')
-def get_issue(issue_id: int) -> list[dict]:
-    return [issue for issue in issues if issue.get('id') == issue_id]
+def setup():
+    app = fastapi.FastAPI()
+    app.include_router(router)
+    
+    register_tortoise(
+        app=app, config=TORTOISE_ORM, generate_schemas=True, add_exception_handlers=True,
+    )
+    
+    app.exception_handler(pydantic.ValidationError)(exc_handlers.query_params_exc_handler)
+    app.exception_handler(http_exc.BaseHTTPException)(exc_handlers.request_exc_handler)
+    app.exception_handler(500)(exc_handlers.internal_exc_handler)
+    
+    return app
 
 
-class Issue(BaseModel):
-    id: int
-    name: str
-    deadline: str
-
-
-@router.post('/issues')
-def add_issue(issues_list: list[Issue]) -> list[Any]:
-    issues.extend(issues_list)
-    return issues
-
-
-@router.post('/issues/{id_}')
-def edit_issue(issue_id: int, new_name: str) -> dict[str, Any]:
-    issue = [issue for issue in issues if issue.get('id') == issue_id][0]
-    issue['name'] = new_name
-    return issue
-
-
-app = fastapi.FastAPI(title='Issue Tracker')
-app.include_router(router)
+app = setup()
 
 
 if __name__ == '__main__':

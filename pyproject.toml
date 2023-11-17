@@ -11,8 +11,15 @@ fastapi = "^0.104.1"
 uvicorn = "^0.24.0.post1"
 sqlalchemy = "^2.0.23"
 psycopg2-binary = "^2.9.9"
+tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
+aerich = "^0.7.2"
 
 
+
+[tool.aerich]
+tortoise_orm = "src.app.db.conf.TORTOISE_ORM"
+location = "src/migrations"
+src_folder = "./."
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
