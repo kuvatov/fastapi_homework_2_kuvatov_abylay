@@ -18,7 +18,7 @@ aerich = "^0.7.2"
 
 [tool.aerich]
 tortoise_orm = "src.app.db.conf.TORTOISE_ORM"
-location = "src/migrations"
+location = "./migrations"
 src_folder = "./."
 [build-system]
 requires = ["poetry-core"]
