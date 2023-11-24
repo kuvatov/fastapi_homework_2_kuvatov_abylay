@@ -13,6 +13,11 @@ CREATE TABLE IF NOT EXISTS "issue" (
     "id" UUID NOT NULL  PRIMARY KEY,
     "name" VARCHAR(30) NOT NULL,
     "deadline" DATE NOT NULL
+);
+CREATE TABLE IF NOT EXISTS "user" (
+    "id" UUID NOT NULL  PRIMARY KEY,
+    "username" VARCHAR(100) NOT NULL UNIQUE,
+    "password" VARCHAR(255) NOT NULL
 );"""
 
 
