@@ -5,8 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - database_url=postgres://postgres:postgres@postgres:5432/postgres
+    env_file:
+      - .env
     ports:
       - "8000:8000"
     volumes:
@@ -29,9 +29,8 @@ services:
     ports:
       - "9000:9000"
       - "9090:9090"
-    environment:
-      - MINIO_ROOT_USER=minio
-      - MINIO_ROOT_PASSWORD=miniominio
+    env_file:
+      - .env
     command: server --console-address :9090 /data
     volumes:
       - ./minio/data:/data
